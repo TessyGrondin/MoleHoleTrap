@@ -13,6 +13,7 @@ class PlayState extends FlxState
 	var moles:Array<Mole>;
 	var score = 0;
 	var pos:FlxRandom;
+	var col:FlxRandom;
 	var x = [80, 170, 80, 170];
 	var y = [100, 100, 250, 250];
 	var score_disp:FlxText;
@@ -27,7 +28,8 @@ class PlayState extends FlxState
 
 		moles = new Array<Mole>();
 		for (i in 0...4) {
-			moles.push(new Mole(1, x[i], y[i]));
+			col = new FlxRandom();
+			moles.push(new Mole(1, x[i], y[i], col.int(0, 4)));
 			add(moles[i]);
 		}
 
@@ -39,17 +41,22 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 
-		for (mole in moles)	{
+		for (i in 0...4)	{
 			pos = new FlxRandom();
-			if((pos.int(1, 8) < 6)) {
-				if (mole.animation.name != "up")
-					mole.animation.play("up");
+			if((pos.int(1, 8) < 3)) {
+				if (moles[i].animation.name == "full_down")
+					moles[i].animation.play("up");
 				break;
 			}
-			if (mole.animation.name == "up" && FlxG.mouse.justPressed && FlxG.mouse.overlaps(mole)) {
-				score = score + mole.value;
+			if (moles[i].animation.name == "up" && FlxG.mouse.justPressed && FlxG.mouse.overlaps(moles[i])) {
+				score = score + moles[i].value;
 				score_disp.text = "SCORE: " + score;
-				mole.animation.play("down");
+				moles[i].animation.play("down");
+			} else if (moles[i].animation.name == "down" && moles[i].animation.finished) {
+				col = new FlxRandom();
+				moles[i].destroy();
+				moles[i] = new Mole(1, x[i], y[i], col.int(0, 4));
+				add(moles[i]);
 			}
 		}
 	}

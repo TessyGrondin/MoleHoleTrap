@@ -1,19 +1,16 @@
 package;
 
 import flixel.FlxSprite;
-import flixel.math.FlxRandom;
 
 class Mole extends FlxSprite
 {
-	var random:FlxRandom;
 	public var value = 300;
 
-	public function new(scaleF:Float, x:Int, y:Int)
+	public function new(scaleF:Float, x:Int, y:Int, rarity:Int)
 	{
 		super(x, y);
-		random = new FlxRandom();
 
-        if (random.int(0, 4) == 0)
+        if (rarity == 0)
     		loadGraphic(AssetPaths.mole_var__png, true, 56, 64);
         else {
             loadGraphic(AssetPaths.mole__png, true, 56, 64);
