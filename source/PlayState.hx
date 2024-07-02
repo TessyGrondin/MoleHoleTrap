@@ -43,10 +43,9 @@ class PlayState extends FlxState
 
 		for (i in 0...4)	{
 			pos = new FlxRandom();
-			if((pos.int(1, 8) < 3)) {
+			if((pos.int(1, 100) < 3)) {
 				if (moles[i].animation.name == "full_down")
 					moles[i].animation.play("up");
-				break;
 			}
 			if (moles[i].animation.name == "up" && FlxG.mouse.justPressed && FlxG.mouse.overlaps(moles[i])) {
 				score = score + moles[i].value;
