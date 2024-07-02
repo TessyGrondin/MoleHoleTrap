@@ -6,6 +6,7 @@ import flixel.math.FlxRandom;
 import flixel.FlxG;
 import haxe.iterators.ArrayIterator;
 import flixel.text.FlxText;
+import flixel.util.FlxTimer;
 
 class PlayState extends FlxState
 {
@@ -17,6 +18,7 @@ class PlayState extends FlxState
 	var x = [80, 170, 80, 170];
 	var y = [100, 100, 250, 250];
 	var score_disp:FlxText;
+	var timer:FlxTimer;
 
 	override public function create()
 	{
@@ -35,6 +37,9 @@ class PlayState extends FlxState
 
 		score_disp = new FlxText(10, 5, 200, "SCORE: " + score, 20);
 		add(score_disp);
+
+		timer = new FlxTimer();
+		timer.start(90, change, 0);
 	}
 
 	override public function update(elapsed:Float)
@@ -58,5 +63,10 @@ class PlayState extends FlxState
 				add(moles[i]);
 			}
 		}
+	}
+
+	public function change(_):Void
+	{
+		FlxG.switchState(new EndState(score));
 	}
 }
