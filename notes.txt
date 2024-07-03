@@ -1,3 +1,2 @@
 petits + :
-    clicker dans le vide fait perdre 50 points
     le changement de points s'affiche à côté de la souris à chaque click

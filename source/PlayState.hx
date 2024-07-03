@@ -80,11 +80,15 @@ class PlayState extends FlxState
 
 	private function missed():Bool
 	{
-		for (mole in moles)
-			if (FlxG.mouse.overlaps(mole))
-				return false;
 		if (!FlxG.mouse.justPressed)
 			return false;
+		for (mole in moles) {
+			if (FlxG.mouse.overlaps(mole)) {
+				if (mole.animation.name == "full_down")
+					return true;
+				return false;
+			}
+		}
 		return true;
 	}
 }
