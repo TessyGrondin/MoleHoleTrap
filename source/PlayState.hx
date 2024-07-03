@@ -7,6 +7,7 @@ import flixel.FlxG;
 import haxe.iterators.ArrayIterator;
 import flixel.text.FlxText;
 import flixel.util.FlxTimer;
+import flixel.util.FlxColor;
 
 class PlayState extends FlxState
 {
