@@ -46,6 +46,12 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 
+		if (missed()) {
+			score = score - 50;
+			if (score < 0)
+				score = 0;
+			score_disp.text = "SCORE: " + score;
+		}
 		for (i in 0...4)	{
 			pos = new FlxRandom();
 			if((pos.int(1, 100) < 3)) {
@@ -70,5 +76,15 @@ class PlayState extends FlxState
 	public function change(_):Void
 	{
 		FlxG.switchState(new EndState(score));
+	}
+
+	private function missed():Bool
+	{
+		for (mole in moles)
+			if (FlxG.mouse.overlaps(mole))
+				return false;
+		if (!FlxG.mouse.justPressed)
+			return false;
+		return true;
 	}
 }
