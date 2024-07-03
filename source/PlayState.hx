@@ -19,6 +19,7 @@ class PlayState extends FlxState
 	var y = [100, 100, 250, 250];
 	var score_disp:FlxText;
 	var timer:FlxTimer;
+	var score_modifier:FlxSprite;
 
 	override public function create()
 	{
@@ -40,17 +41,29 @@ class PlayState extends FlxState
 
 		timer = new FlxTimer();
 		timer.start(90, change, 0);
+
+		score_modifier = new FlxSprite(0, 0);
+		score_modifier.loadGraphic(AssetPaths.score__png, true, 32, 32);
+		score_modifier.scale.set(2, 2);
+		score_modifier.animation.add("50", [0]);
+		score_modifier.animation.add("100", [1]);
+		score_modifier.animation.add("300", [2]);
+		score_modifier.animation.play("100");
+		add(score_modifier);
 	}
 
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
+		score_modifier.x = FlxG.mouse.x;
+		score_modifier.y = FlxG.mouse.y - 50;
 		if (missed()) {
 			score = score - 50;
 			if (score < 0)
 				score = 0;
 			score_disp.text = "SCORE: " + score;
+			score_modifier.animation.play("50");
 		}
 		for (i in 0...4)	{
 			pos = new FlxRandom();
@@ -62,6 +75,7 @@ class PlayState extends FlxState
 				moles[i].animation.play("down");
 			if ((moles[i].animation.name != "full_down" && FlxG.mouse.justPressed && FlxG.mouse.overlaps(moles[i]))) {
 				score = score + moles[i].value;
+				score_modifier.animation.play("" + moles[i].value);
 				score_disp.text = "SCORE: " + score;
 				moles[i].animation.play("down");
 			} else if (moles[i].animation.name == "down" && moles[i].animation.finished) {
