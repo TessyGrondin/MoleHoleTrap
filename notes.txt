@@ -1,2 +1,0 @@
-petits + :
-    le changement de points s'affiche à côté de la souris à chaque click
