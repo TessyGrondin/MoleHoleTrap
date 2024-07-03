@@ -58,6 +58,10 @@ class PlayState extends FlxState
 
 		score_modifier.x = FlxG.mouse.x;
 		score_modifier.y = FlxG.mouse.y - 50;
+		if (!FlxG.mouse.pressed)
+			score_modifier.alpha = 0;
+		else
+			score_modifier.alpha = 255;
 		if (missed()) {
 			score = score - 50;
 			if (score < 0)
@@ -89,7 +93,10 @@ class PlayState extends FlxState
 
 	public function change(_):Void
 	{
-		FlxG.switchState(new EndState(score));
+		FlxG.camera.fade(FlxColor.BLACK, 0.33, false, function()
+		{
+			FlxG.switchState(new EndState(score));
+		});
 	}
 
 	private function missed():Bool
