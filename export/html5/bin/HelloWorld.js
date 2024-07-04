@@ -925,7 +925,7 @@ ApplicationMain.main = function() {
 ApplicationMain.create = function(config) {
 	var app = new openfl_display_Application();
 	ManifestResources.init(config);
-	app.meta.h["build"] = "12";
+	app.meta.h["build"] = "13";
 	app.meta.h["company"] = "HaxeFlixel";
 	app.meta.h["file"] = "HelloWorld";
 	app.meta.h["name"] = "HelloWorld";
@@ -8329,6 +8329,7 @@ flixel_FlxSprite.prototype = $extend(flixel_FlxObject.prototype,{
 	,__properties__: $extend(flixel_FlxObject.prototype.__properties__,{set_clipRect:"set_clipRect",set_color:"set_color",set_blend:"set_blend",set_flipY:"set_flipY",set_flipX:"set_flipX",set_facing:"set_facing",set_alpha:"set_alpha",set_graphic:"set_graphic",set_frames:"set_frames",get_numFrames:"get_numFrames",set_frame:"set_frame",set_pixels:"set_pixels",get_pixels:"get_pixels",set_antialiasing:"set_antialiasing",set_useFramePixels:"set_useFramePixels"})
 });
 var Mole = function(scaleF,x,y,rarity) {
+	this.touched = false;
 	this.value = 300;
 	flixel_FlxSprite.call(this,x,y);
 	if(rarity == 0) {
@@ -8352,14 +8353,15 @@ Mole.__name__ = "Mole";
 Mole.__super__ = flixel_FlxSprite;
 Mole.prototype = $extend(flixel_FlxSprite.prototype,{
 	value: null
+	,touched: null
 	,update: function(elapsed) {
 		flixel_FlxSprite.prototype.update.call(this,elapsed);
 	}
 	,__class__: Mole
 });
 var PlayState = function() {
-	this.y = [100,100,250,250];
-	this.x = [80,170,80,170];
+	this.y = [100,100,100,100,170,170,170,170,240,240,240,240,310,310,310,310];
+	this.x = [40,100,160,220,40,100,160,220,40,100,160,220,40,100,160,220];
 	this.score = 0;
 	flixel_FlxState.call(this);
 };
@@ -8377,24 +8379,20 @@ PlayState.prototype = $extend(flixel_FlxState.prototype,{
 	,score_disp: null
 	,timer: null
 	,score_modifier: null
+	,timer_disp: null
 	,create: function() {
 		flixel_FlxState.prototype.create.call(this);
 		this.background = new flixel_FlxSprite(0,0);
 		this.background.loadGraphic("assets/images/background.png",true,320,480);
 		this.add(this.background);
 		this.moles = [];
-		this.col = new flixel_math_FlxRandom();
-		this.moles.push(new Mole(1,this.x[0],this.y[0],this.col.int(0,4)));
-		this.add(this.moles[0]);
-		this.col = new flixel_math_FlxRandom();
-		this.moles.push(new Mole(1,this.x[1],this.y[1],this.col.int(0,4)));
-		this.add(this.moles[1]);
-		this.col = new flixel_math_FlxRandom();
-		this.moles.push(new Mole(1,this.x[2],this.y[2],this.col.int(0,4)));
-		this.add(this.moles[2]);
-		this.col = new flixel_math_FlxRandom();
-		this.moles.push(new Mole(1,this.x[3],this.y[3],this.col.int(0,4)));
-		this.add(this.moles[3]);
+		var _g = 0;
+		while(_g < 16) {
+			var i = _g++;
+			this.col = new flixel_math_FlxRandom();
+			this.moles.push(new Mole(1,this.x[i],this.y[i],this.col.int(0,4)));
+			this.add(this.moles[i]);
+		}
 		this.score_disp = new flixel_text_FlxText(10,5,200,"SCORE: " + this.score,20);
 		this.add(this.score_disp);
 		this.timer = new flixel_util_FlxTimer();
@@ -8417,9 +8415,14 @@ PlayState.prototype = $extend(flixel_FlxState.prototype,{
 		this.score_modifier.animation.add("300",[2]);
 		this.score_modifier.animation.play("100");
 		this.add(this.score_modifier);
+		var _this = this.timer;
+		this.timer_disp = new flixel_text_FlxText(flixel_FlxG.width - 50,10,200,"" + (_this.time - _this._timeCounter | 0),20);
+		this.add(this.timer_disp);
 	}
 	,update: function(elapsed) {
 		flixel_FlxState.prototype.update.call(this,elapsed);
+		var _this = this.timer;
+		this.timer_disp.set_text("" + (_this.time - _this._timeCounter | 0));
 		this.score_modifier.set_x(flixel_FlxG.mouse.x);
 		this.score_modifier.set_y(flixel_FlxG.mouse.y - 50);
 		var _this = flixel_FlxG.mouse._leftButton;
@@ -8437,7 +8440,7 @@ PlayState.prototype = $extend(flixel_FlxState.prototype,{
 			this.score_modifier.animation.play("50");
 		}
 		var _g = 0;
-		while(_g < 4) {
+		while(_g < 16) {
 			var i = _g++;
 			this.pos = new flixel_math_FlxRandom();
 			if(this.pos.int(1,100) < 3) {
@@ -8453,6 +8456,7 @@ PlayState.prototype = $extend(flixel_FlxState.prototype,{
 				this.score_modifier.animation.play("" + this.moles[i].value);
 				this.score_disp.set_text("SCORE: " + this.score);
 				this.moles[i].animation.play("down");
+				this.moles[i].touched = true;
 			} else if(this.moles[i].animation.get_name() == "down" && this.moles[i].animation.get_finished()) {
 				this.col = new flixel_math_FlxRandom();
 				this.moles[i].destroy();
@@ -8487,7 +8491,7 @@ PlayState.prototype = $extend(flixel_FlxState.prototype,{
 			var mole = _g1[_g];
 			++_g;
 			if(flixel_FlxG.mouse.overlaps(mole)) {
-				if(mole.animation.get_name() == "full_down") {
+				if(mole.animation.get_name() == "full_down" || mole.touched) {
 					return true;
 				}
 				return false;
@@ -77224,7 +77228,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 862948;
+	this.version = 332805;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = "lime.utils.AssetCache";

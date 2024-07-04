@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 class Mole extends FlxSprite
 {
 	public var value = 300;
+	public var touched = false;
 
 	public function new(scaleF:Float, x:Int, y:Int, rarity:Int)
 	{

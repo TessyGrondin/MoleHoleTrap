@@ -21,6 +21,7 @@ class PlayState extends FlxState
 	var score_disp:FlxText;
 	var timer:FlxTimer;
 	var score_modifier:FlxSprite;
+	var timer_disp:FlxText;
 
 	override public function create()
 	{
@@ -51,18 +52,25 @@ class PlayState extends FlxState
 		score_modifier.animation.add("300", [2]);
 		score_modifier.animation.play("100");
 		add(score_modifier);
+
+		timer_disp = new FlxText(FlxG.width - 50, 10, 200, "" + Std.int(timer.timeLeft), 20);
+		add(timer_disp);
 	}
 
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
+		timer_disp.text = "" + Std.int(timer.timeLeft);
+
 		score_modifier.x = FlxG.mouse.x;
 		score_modifier.y = FlxG.mouse.y - 50;
+
 		if (!FlxG.mouse.pressed)
 			score_modifier.alpha = 0;
 		else
 			score_modifier.alpha = 255;
+
 		if (missed()) {
 			score = score - 50;
 			if (score < 0)
@@ -70,6 +78,7 @@ class PlayState extends FlxState
 			score_disp.text = "SCORE: " + score;
 			score_modifier.animation.play("50");
 		}
+
 		for (i in 0...16)	{
 			pos = new FlxRandom();
 			if((pos.int(1, 100) < 3)) {
@@ -83,6 +92,7 @@ class PlayState extends FlxState
 				score_modifier.animation.play("" + moles[i].value);
 				score_disp.text = "SCORE: " + score;
 				moles[i].animation.play("down");
+				moles[i].touched = true;
 			} else if (moles[i].animation.name == "down" && moles[i].animation.finished) {
 				col = new FlxRandom();
 				moles[i].destroy();
@@ -106,7 +116,7 @@ class PlayState extends FlxState
 			return false;
 		for (mole in moles) {
 			if (FlxG.mouse.overlaps(mole)) {
-				if (mole.animation.name == "full_down")
+				if (mole.animation.name == "full_down" || mole.touched)
 					return true;
 				return false;
 			}
