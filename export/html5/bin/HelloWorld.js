@@ -925,7 +925,7 @@ ApplicationMain.main = function() {
 ApplicationMain.create = function(config) {
 	var app = new openfl_display_Application();
 	ManifestResources.init(config);
-	app.meta.h["build"] = "13";
+	app.meta.h["build"] = "15";
 	app.meta.h["company"] = "HaxeFlixel";
 	app.meta.h["file"] = "HelloWorld";
 	app.meta.h["name"] = "HelloWorld";
@@ -8451,7 +8451,7 @@ PlayState.prototype = $extend(flixel_FlxState.prototype,{
 			if(this.moles[i].animation.get_name() == "up" && this.moles[i].animation.get_finished()) {
 				this.moles[i].animation.play("down");
 			}
-			if(this.moles[i].animation.get_name() != "full_down" && flixel_FlxG.mouse._leftButton.current == 2 && flixel_FlxG.mouse.overlaps(this.moles[i])) {
+			if(this.moles[i].animation.get_name() != "full_down" && flixel_FlxG.mouse._leftButton.current == 2 && flixel_FlxG.mouse.overlaps(this.moles[i]) && !this.moles[i].touched) {
 				this.score += this.moles[i].value;
 				this.score_modifier.animation.play("" + this.moles[i].value);
 				this.score_disp.set_text("SCORE: " + this.score);
@@ -77228,7 +77228,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 332805;
+	this.version = 859164;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = "lime.utils.AssetCache";
