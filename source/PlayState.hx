@@ -87,7 +87,7 @@ class PlayState extends FlxState
 			}
 			if (moles[i].animation.name == "up" && moles[i].animation.finished)
 				moles[i].animation.play("down");
-			if ((moles[i].animation.name != "full_down" && FlxG.mouse.justPressed && FlxG.mouse.overlaps(moles[i]))) {
+			if (moles[i].animation.name != "full_down" && FlxG.mouse.justPressed && FlxG.mouse.overlaps(moles[i]) && !moles[i].touched) {
 				score = score + moles[i].value;
 				score_modifier.animation.play("" + moles[i].value);
 				score_disp.text = "SCORE: " + score;
