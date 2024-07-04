@@ -16,8 +16,8 @@ class PlayState extends FlxState
 	var score = 0;
 	var pos:FlxRandom;
 	var col:FlxRandom;
-	var x = [80, 170, 80, 170];
-	var y = [100, 100, 250, 250];
+	var x = [40, 100, 160, 220, 40, 100, 160, 220, 40, 100, 160, 220, 40, 100, 160, 220];
+	var y = [100, 100, 100, 100, 170, 170, 170, 170, 240, 240, 240, 240, 310, 310, 310, 310];
 	var score_disp:FlxText;
 	var timer:FlxTimer;
 	var score_modifier:FlxSprite;
@@ -31,7 +31,7 @@ class PlayState extends FlxState
 		add(background);
 
 		moles = new Array<Mole>();
-		for (i in 0...4) {
+		for (i in 0...16) {
 			col = new FlxRandom();
 			moles.push(new Mole(1, x[i], y[i], col.int(0, 4)));
 			add(moles[i]);
@@ -70,7 +70,7 @@ class PlayState extends FlxState
 			score_disp.text = "SCORE: " + score;
 			score_modifier.animation.play("50");
 		}
-		for (i in 0...4)	{
+		for (i in 0...16)	{
 			pos = new FlxRandom();
 			if((pos.int(1, 100) < 3)) {
 				if (moles[i].animation.name == "full_down")
