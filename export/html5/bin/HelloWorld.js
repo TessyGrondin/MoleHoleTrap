@@ -925,7 +925,7 @@ ApplicationMain.main = function() {
 ApplicationMain.create = function(config) {
 	var app = new openfl_display_Application();
 	ManifestResources.init(config);
-	app.meta.h["build"] = "15";
+	app.meta.h["build"] = "16";
 	app.meta.h["company"] = "HaxeFlixel";
 	app.meta.h["file"] = "HelloWorld";
 	app.meta.h["name"] = "HelloWorld";
@@ -3631,6 +3631,9 @@ EReg.prototype = {
 	}
 	,__class__: EReg
 };
+var HighScore = function() { };
+$hxClasses["HighScore"] = HighScore;
+HighScore.__name__ = "HighScore";
 var flixel_util_IFlxDestroyable = function() { };
 $hxClasses["flixel.util.IFlxDestroyable"] = flixel_util_IFlxDestroyable;
 flixel_util_IFlxDestroyable.__name__ = "flixel.util.IFlxDestroyable";
@@ -4517,11 +4520,50 @@ EndState.prototype = $extend(flixel_FlxState.prototype,{
 		this.background = new flixel_FlxSprite();
 		this.background.loadGraphic("assets/images/background.png",true,320,480);
 		this.add(this.background);
-		this.score = new flixel_text_FlxText(100,flixel_FlxG.height / 2,200,"Final result: " + this.finalScore,20);
+		var tmp;
+		if(HighScore.s1 < HighScore.s2 && HighScore.s2 >= HighScore.s3) {
+			tmp = HighScore.s1;
+			HighScore.s1 = HighScore.s2;
+			HighScore.s2 = tmp;
+		} else if(HighScore.s1 >= HighScore.s2 && HighScore.s2 < HighScore.s3) {
+			tmp = HighScore.s2;
+			HighScore.s2 = HighScore.s3;
+			HighScore.s3 = tmp;
+		} else if(HighScore.s1 < HighScore.s2 && HighScore.s2 < HighScore.s3) {
+			tmp = HighScore.s1;
+			HighScore.s1 = HighScore.s3;
+			HighScore.s3 = tmp;
+		}
+		if(this.finalScore > HighScore.s1) {
+			HighScore.s3 = HighScore.s2;
+			HighScore.s2 = HighScore.s1;
+			HighScore.s1 = this.finalScore;
+		} else if(this.finalScore > HighScore.s2) {
+			HighScore.s3 = HighScore.s2;
+			HighScore.s2 = this.finalScore;
+		} else if(this.finalScore > HighScore.s3) {
+			HighScore.s3 = this.finalScore;
+		}
+		this.score = new flixel_text_FlxText(100,20,200,"Final result: " + this.finalScore + "\n\n\nHigh scores :\n" + HighScore.s1 + "\n" + HighScore.s2 + "\n" + HighScore.s3,20);
 		this.add(this.score);
 	}
 	,update: function(elapsed) {
 		flixel_FlxState.prototype.update.call(this,elapsed);
+		if(flixel_FlxG.mouse._leftButton.current == 2) {
+			flixel_FlxG.camera.fade(-16777216,0.33,false,function() {
+				var nextState = flixel_util_typeLimit_NextState.fromState(new MenuState());
+				var stateOnCall = flixel_FlxG.game._state;
+				if(!((nextState) instanceof flixel_FlxState) || flixel_FlxG.canSwitchTo(nextState)) {
+					flixel_FlxG.game._state.startOutro(function() {
+						if(flixel_FlxG.game._state == stateOnCall) {
+							flixel_FlxG.game._nextState = nextState;
+						} else {
+							flixel_FlxG.log.advanced("`onOutroComplete` was called after the state was switched. This will be ignored",flixel_system_debug_log_LogStyle.WARNING,true);
+						}
+					});
+				}
+			});
+		}
 	}
 	,__class__: EndState
 });
@@ -77228,7 +77270,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 859164;
+	this.version = 818381;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = "lime.utils.AssetCache";
@@ -126050,6 +126092,9 @@ AssetPaths.score__png = "assets/images/score.png";
 AssetPaths.music_goes_here__txt = "assets/music/music-goes-here.txt";
 AssetPaths.sounds_go_here__txt = "assets/sounds/sounds-go-here.txt";
 AssetPaths.allFiles = ["assets/data/data-goes-here.txt","assets/images/background.png","assets/images/images-go-here.txt","assets/images/mole.png","assets/images/mole_var.png","assets/images/score.png","assets/music/music-goes-here.txt","assets/sounds/sounds-go-here.txt"];
+HighScore.s1 = 0;
+HighScore.s2 = 0;
+HighScore.s3 = 0;
 flixel_FlxBasic.idEnumerator = 0;
 openfl_text_Font.__fontByName = new haxe_ds_StringMap();
 openfl_text_Font.__registeredFonts = [];
